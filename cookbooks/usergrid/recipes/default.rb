@@ -6,10 +6,20 @@
 # 
 # All rights reserved - Do Not Redistribute
 #
+service "cassandra" do
+  supports :status => true, :restart => true, :reload => true
+  action [ :enable, :start ]
+end
+service "tomcat" do
+  supports :status => true, :restart => true, :reload => true
+  action [ :enable, :start ]
+end
 git "/opt/usergrid" do
+	user "root"
   repository "https://github.com/usergrid/usergrid.git"
   reference "master"
-  action :sync
+  action :export
+  depth 1
   notifies :run, 'bash[install_sdk]', :immediately
 end
 http_request "database_setup" do
@@ -54,7 +64,7 @@ end
 # end
 
 bash "deploy_war" do
-  user "tomcat6"
+  user "root"
   cwd "/opt/usergrid/stack/rest/target/"
   code <<-EOH
   rm -rf /var/lib/tomcat6/webapps/ROOT
@@ -73,7 +83,7 @@ end
 #   retry_delay 5
 # end
 cookbook_file "usergrid-custom.properties" do
-	user "tomcat6"
+	user "root"
 	group "tomcat6"
   path "/var/lib/tomcat6/webapps/ROOT/WEB-INF/classes/usergrid-custom.properties"
   action :nothing
