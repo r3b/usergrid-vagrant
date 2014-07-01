@@ -1,11 +1,10 @@
-NAME = "stack"
 Vagrant.configure("2") do |config|
 	config.berkshelf.enabled = true
   	config.omnibus.chef_version = :latest
-	config.vm.hostname = NAME
+	config.vm.hostname = "usergrid"
 	config.vm.box = "precise64"
 	config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-	config.vm.network :private_network, ip: "33.33.33.7"
+	config.vm.network :private_network, ip: "10.33.33.7"
 	[ 8080, 9000 ].each do |port|
       config.vm.network :forwarded_port, guest: port, host: port, auto_correct: true
     end
